@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "yargi-mcp": {
+      "command": "uv",
+      "args": ["run", "mcp_server_main.py"],
+      "env": {
+        "OPENROUTER_API_KEY": ""
+      }
+    }
+  }
+}
