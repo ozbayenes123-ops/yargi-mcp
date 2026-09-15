@@ -6,11 +6,13 @@ prints the server's JSON-RPC responses. Verifies Antigravity will be able to
 talk to the server spawned by:  uv run --project <dir> yargi-mcp
 """
 import json
+import os
 import subprocess
 import sys
 import time
+from pathlib import Path
 
-PROJ = r"C:\dev\mcp\yargi-mcp"
+PROJ = os.environ.get("YARGI_MCP_PATH") or str(Path(__file__).resolve().parent)
 
 
 def rpc(method, params=None, id_=None):
