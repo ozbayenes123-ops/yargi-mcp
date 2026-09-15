@@ -1,103 +1,6 @@
 # Yargı MCP: Türk Hukuk Kaynakları için MCP Sunucusu
 
-[![MCP Toplist](https://mcptoplist.com/badge/glama%2Fsaidsurucu%2Fyargi-mcp.svg)](https://mcptoplist.com/server/glama%2Fsaidsurucu%2Fyargi-mcp)
-
-> ## ✨ Profesyonel Sürüm Hazır: Yargı MCP Pro
->
-> **Mevzuat ve içtihatı tek bir MCP sunucusunda birleştiren** profesyonel sürüm yayında:
->
-> 👉 **https://yargi.betaspacestudio.com**
-
-> ## 🚨 SUNUCU YENİ ADRESE TAŞINDI
->
-> **Yeni Remote MCP adresi:** `https://yargimcp.surucu.dev/mcp`
->
-> **Eski adres** (`https://yargimcp.fastmcp.app/mcp`) **artık kullanım dışıdır** — yalnızca taşındığını bildiren bir uyarı tool'u döner.
->
-> **Yapmanız gereken:** MCP istemcinizdeki (Claude Desktop, 5ire, Google Antigravity, ChatGPT vb.) sunucu URL'sini yukarıdaki yeni adresle güncelleyin.
-
-## Word'den UDF'ye profesyonel dönüşüm için yeni uygulamam [udfcevir.com](https://udfcevir.com) adresinde! 
-
-[![Star History Chart](https://api.star-history.com/svg?repos=saidsurucu/yargi-mcp&type=Date)](https://www.star-history.com/#saidsurucu/yargi-mcp&Date)
-
 Bu proje, çeşitli Türk hukuk kaynaklarına (Yargıtay, Danıştay, Emsal Kararlar, Uyuşmazlık Mahkemesi, Anayasa Mahkemesi - Norm Denetimi ile Bireysel Başvuru Kararları, Kamu İhale Kurulu Kararları, Rekabet Kurumu Kararları, Sayıştay Kararları, KVKK Kararları, BDDK Kararları, BTK Kararları, GİB Özelgeleri ve Sigorta Tahkim Komisyonu Kararları) erişimi kolaylaştıran bir [FastMCP](https://gofastmcp.com/) sunucusu oluşturur. Bu sayede, bu kaynaklardan veri arama ve belge getirme işlemleri, Model Context Protocol (MCP) destekleyen LLM (Büyük Dil Modeli) uygulamaları (örneğin Claude Desktop veya [5ire](https://5ire.app)) ve diğer istemciler tarafından araç (tool) olarak kullanılabilir hale gelir.
-
----
-
-## 🚀 5 Dakikada Başla (Remote MCP)
-
-### ✅ Kurulum Gerektirmez! Hemen Kullan!
-
-🔗 **Remote MCP Adresi:** `https://yargimcp.surucu.dev/mcp`
-
-> ⚠️ **Eski adres** `https://yargimcp.fastmcp.app/mcp` **artık kullanım dışıdır** — yalnızca taşındığını bildiren bir uyarı tool'u döner. Lütfen yukarıdaki yeni adresi kullanın.
-
-### Claude Desktop ile Kullanım (Ücretli abonelik gerekir)
-
-1. **Claude Desktop'ı açın**
-2. **Settings → Connectors → Add Custom Connector**
-3. **Bilgileri girin:**
-   - **Name:** `Yargı MCP`
-   - **URL:** `https://yargimcp.surucu.dev/mcp`
-4. **Add** butonuna tıklayın
-5. **Hemen kullanmaya başlayın!** 🎉
-
-### Google Antigravity ile Kullanım (Lokal `uv` Kurulumu — Kopyala-Yapıştır)
-
-> **Ön Gereksinimler:** Bilgisayarınızda **Python**, **`uv`** ([kurulum](https://docs.astral.sh/uv/getting-started/installation/)) ve **Node.js** ([indir](https://nodejs.org/en/download)) kurulu olmalı. (Node.js yalnızca aşağıdaki kurulum komutunu çalıştırmak için gerekir; MCP'yi `uvx` çalıştırır.)
-
-Aşağıdaki **bloğun tamamını** terminale yapıştırın. Komut, Antigravity'nin okuduğu `~/.gemini/config/mcp_config.json` dosyasını sizin yerinize oluşturur/günceller (varsa diğer sunucularınız korunur):
-
-**macOS / Linux** (Terminal):
-
-```bash
-node - <<'YARGI'
-const fs=require("fs"),os=require("os"),path=require("path");
-const dir=path.join(os.homedir(),".gemini","config"),file=path.join(dir,"mcp_config.json");
-fs.mkdirSync(dir,{recursive:true});
-let cfg={};try{cfg=JSON.parse(fs.readFileSync(file,"utf8"))}catch{}
-if(typeof cfg!=="object"||cfg===null||Array.isArray(cfg))cfg={};
-if(typeof cfg.mcpServers!=="object"||cfg.mcpServers===null)cfg.mcpServers={};
-cfg.mcpServers["yargi-mcp"]={command:"uvx",args:["yargi-mcp"]};
-fs.writeFileSync(file,JSON.stringify(cfg,null,2)+"\n");
-console.log("yargi-mcp eklendi -> "+file);
-YARGI
-```
-
-**Windows** (PowerShell):
-
-```powershell
-@'
-const fs=require("fs"),os=require("os"),path=require("path");
-const dir=path.join(os.homedir(),".gemini","config"),file=path.join(dir,"mcp_config.json");
-fs.mkdirSync(dir,{recursive:true});
-let cfg={};try{cfg=JSON.parse(fs.readFileSync(file,"utf8"))}catch{}
-if(typeof cfg!=="object"||cfg===null||Array.isArray(cfg))cfg={};
-if(typeof cfg.mcpServers!=="object"||cfg.mcpServers===null)cfg.mcpServers={};
-cfg.mcpServers["yargi-mcp"]={command:"uvx",args:["yargi-mcp"]};
-fs.writeFileSync(file,JSON.stringify(cfg,null,2)+"\n");
-console.log("yargi-mcp eklendi -> "+file);
-'@ | node -
-```
-
-Komut `yargi-mcp eklendi -> ...` çıktısını verdiğinde kurulum tamamlanmıştır. Antigravity'yi (açıksa kapatıp) yeniden başlatın; `yargi-mcp` araçları otomatik yüklenir.
-
-> 💡 **İpucu:** Lokal kurulumda hukuk kaynaklarına erişim doğrudan bilgisayarınızda `uvx yargi-mcp` ile çalışır; uzaktan sunucuya ihtiyaç duymaz.
-
-### Remote MCP Sorun Giderme
-
-`https://yargimcp.surucu.dev/mcp` bir web sayfası değil, Streamable HTTP MCP uç noktasıdır. Tarayıcıda açınca veya düz `curl` ile GET isteği atınca `406 Not Acceptable` ve `Client must accept text/event-stream` benzeri bir yanıt görmek normaldir; bu, sunucunun kapalı olduğu anlamına gelmez. MCP istemcisi `Accept: application/json, text/event-stream` başlığıyla JSON-RPC isteği göndermelidir.
-
-Hızlı sağlık kontrolü için tarayıcıda şu adresleri açabilirsiniz:
-
-- `https://yargimcp.surucu.dev/health` — servis sağlık durumu
-
-Claude.ai veya başka bir istemci "araç yok" gibi davranırsa:
-
-1. Connector'ı kaldırıp yeniden ekleyin.
-2. URL olarak önce `https://yargimcp.surucu.dev/mcp` deneyin; istemciniz yönlendirmeleri takip etmiyorsa `https://yargimcp.surucu.dev/mcp/` deneyin.
-3. Eski `https://yargimcp.fastmcp.app/mcp` adresinin istemci ayarlarında veya önbellekte kalmadığından emin olun.
-4. İstemcinin remote/Streamable HTTP MCP desteklediğini ve `text/event-stream` kabul ettiğini kontrol edin.
 
 ---
 
@@ -535,3 +438,5 @@ Detaylı deployment rehberi için: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 📜 **Lisans**
 
 Bu proje MIT Lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakınız.
+
+Bu sunucu, MIT lisanslı [Yargı MCP](https://pypi.org/project/yargi-mcp/) projesi (Said Surucu) temel alınarak yerel kullanım için uyarlanmıştır; telif ve lisans bildirimi korunmuştur.
