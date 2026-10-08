@@ -440,3 +440,7 @@ Detaylı deployment rehberi için: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 Bu proje MIT Lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakınız.
 
 Bu sunucu, MIT lisanslı [Yargı MCP](https://pypi.org/project/yargi-mcp/) projesi (Said Surucu) temel alınarak yerel kullanım için uyarlanmıştır; telif ve lisans bildirimi korunmuştur.
+
+## İlişkili skill'ler
+
+- `skills/dilekce-yazimi/` — Türkiye dilekçe yazımı (HMK/CMK/İİK iskeletleri, PII maskeleme); mevzuat doğrulaması için yargi tool'larını kullanır.
