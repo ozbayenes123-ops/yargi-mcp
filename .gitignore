@@ -1,6 +1,16 @@
+# Hermes local assets — do not commit
+node_modules/
 .venv/
+venv/
+dist/
+build/
 __pycache__/
 *.pyc
-*.egg-info/
-.uv/
-cache/
+*.pyo
+.env
+*.env.*
+!.env.example
+*.pem
+*.key
+*.log
+.cache/

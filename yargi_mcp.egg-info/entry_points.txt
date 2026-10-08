@@ -1,0 +1,3 @@
+[console_scripts]
+yargi-cli = yargi_cli:main
+yargi-mcp = mcp_server_main:main
