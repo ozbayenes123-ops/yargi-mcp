@@ -14,3 +14,6 @@ __pycache__/
 *.key
 *.log
 .cache/
+
+cache/
+data/
