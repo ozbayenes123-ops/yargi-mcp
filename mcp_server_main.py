@@ -425,33 +425,72 @@ app = FastMCP(
 
 # --- Health Check Functions (using individual clients) ---
 
-# --- API Client Instances ---
-yargitay_client_instance = YargitayOfficialApiClient()
-danistay_client_instance = DanistayApiClient()
-emsal_client_instance = EmsalApiClient()
-uyusmazlik_client_instance = UyusmazlikApiClient()
-anayasa_norm_client_instance = AnayasaMahkemesiApiClient()
-anayasa_bireysel_client_instance = AnayasaBireyselBasvuruApiClient()
-anayasa_unified_client_instance = AnayasaUnifiedClient()
-kik_v2_client_instance = KikV2ApiClient()
-rekabet_client_instance = RekabetKurumuApiClient()
-bedesten_client_instance = BedestenApiClient()
-sayistay_client_instance = SayistayApiClient()
-sayistay_unified_client_instance = SayistayUnifiedClient()
-kvkk_client_instance = KvkkApiClient()
-kdk_client_instance = KdkApiClient()
-spk_client_instance = SpkApiClient()
-tbb_client_instance = TbbApiClient()
-epdk_client_instance = EpdkApiClient()
-hsk_client_instance = HskApiClient()
-reklam_client_instance = ReklamApiClient()
-bddk_client_instance = BddkApiClient()
-btk_client_instance = BtkApiClient()
-gib_client_instance = GibApiClient()
-sigorta_tahkim_client_instance = SigortaTahkimApiClient()
-mevzuat_client_instance = MevzuatApiClient()
-resmi_gazete_client_instance = ResmiGazeteApiClient()
-aihm_client_instance = AihmApiClient()
+# --- API Client Instances (lazy) ---
+# Each client's __init__ eagerly builds an httpx.AsyncClient whose SSL context
+# loads the full certifi CA bundle (~1.2s per client on Windows/OpenSSL) and,
+# for a few clients, a MarkItDown/ONNX setup. Building all ~26 clients at import
+# added ~25-30s to MCP cold start even though a typical session uses only a few.
+# _LazyClient defers that __init__ cost to the first attribute access, so server
+# startup and tools/list no longer pay for clients the session never touches.
+class _LazyClient:
+    """Transparent proxy that constructs its wrapped client on first use."""
+
+    __slots__ = ("_factory", "_instance")
+
+    def __init__(self, factory):
+        object.__setattr__(self, "_factory", factory)
+        object.__setattr__(self, "_instance", None)
+
+    def _realize(self):
+        instance = object.__getattribute__(self, "_instance")
+        if instance is None:
+            instance = object.__getattribute__(self, "_factory")()
+            object.__setattr__(self, "_instance", instance)
+        return instance
+
+    @property
+    def _realized(self) -> bool:
+        return object.__getattribute__(self, "_instance") is not None
+
+    async def close_client_session(self):
+        # Mirror perform_cleanup(): never realize an unused client at shutdown.
+        instance = object.__getattribute__(self, "_instance")
+        if instance is None:
+            return None
+        close = getattr(instance, "close_client_session", None)
+        if callable(close):
+            return await close()
+
+    def __getattr__(self, name):
+        return getattr(self._realize(), name)
+
+
+yargitay_client_instance = _LazyClient(YargitayOfficialApiClient)
+danistay_client_instance = _LazyClient(DanistayApiClient)
+emsal_client_instance = _LazyClient(EmsalApiClient)
+uyusmazlik_client_instance = _LazyClient(UyusmazlikApiClient)
+anayasa_norm_client_instance = _LazyClient(AnayasaMahkemesiApiClient)
+anayasa_bireysel_client_instance = _LazyClient(AnayasaBireyselBasvuruApiClient)
+anayasa_unified_client_instance = _LazyClient(AnayasaUnifiedClient)
+kik_v2_client_instance = _LazyClient(KikV2ApiClient)
+rekabet_client_instance = _LazyClient(RekabetKurumuApiClient)
+bedesten_client_instance = _LazyClient(BedestenApiClient)
+sayistay_client_instance = _LazyClient(SayistayApiClient)
+sayistay_unified_client_instance = _LazyClient(SayistayUnifiedClient)
+kvkk_client_instance = _LazyClient(KvkkApiClient)
+kdk_client_instance = _LazyClient(KdkApiClient)
+spk_client_instance = _LazyClient(SpkApiClient)
+tbb_client_instance = _LazyClient(TbbApiClient)
+epdk_client_instance = _LazyClient(EpdkApiClient)
+hsk_client_instance = _LazyClient(HskApiClient)
+reklam_client_instance = _LazyClient(ReklamApiClient)
+bddk_client_instance = _LazyClient(BddkApiClient)
+btk_client_instance = _LazyClient(BtkApiClient)
+gib_client_instance = _LazyClient(GibApiClient)
+sigorta_tahkim_client_instance = _LazyClient(SigortaTahkimApiClient)
+mevzuat_client_instance = _LazyClient(MevzuatApiClient)
+resmi_gazete_client_instance = _LazyClient(ResmiGazeteApiClient)
+aihm_client_instance = _LazyClient(AihmApiClient)
 
 # Health check client (singleton for reuse)
 _health_check_client: Optional[httpx.AsyncClient] = None
